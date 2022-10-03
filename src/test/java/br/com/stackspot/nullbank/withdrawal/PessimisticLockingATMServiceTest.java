@@ -49,7 +49,7 @@ class PessimisticLockingATMServiceTest extends SpringBootIntegrationTest {
                     .withdraw(ACCOUNT.getId(), 20.0);
         });
 
-        assertAll("withdrawing money from an account",
+        assertAll("account and transaction states",
             () -> assertEquals(0.0, accountRepository.getBalance(ACCOUNT.getId()), "account balance"),
             () -> assertEquals(5, transactionRepository.countByAccount(ACCOUNT), "number of transactions")
         );
