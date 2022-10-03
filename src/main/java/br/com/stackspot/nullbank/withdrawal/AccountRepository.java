@@ -37,7 +37,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                       and (balance - :amount) >= 0
                    """
     )
-    public int withdrawWithValidation(Long accountId, Double amount);
+    public int updateWithValidation(Long accountId, Double amount);
 
     @Transactional
 //    @Modifying
