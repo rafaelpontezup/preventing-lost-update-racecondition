@@ -49,6 +49,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                 returning balance
                    """
     )
-    public Double withdrawWithReturning(Long accountId, Double amount);
+    public Double updateWithReturning(Long accountId, Double amount);
 
 }
