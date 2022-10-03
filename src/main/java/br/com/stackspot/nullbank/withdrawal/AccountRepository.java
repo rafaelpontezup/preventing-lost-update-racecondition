@@ -26,6 +26,16 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query("select c from Account c where c.id = :accountId")
     public Optional<Account> findByIdWithPessimisticLocking(Long accountId);
 
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+            value = """
+                   update account
+                      set balance = (balance - :amount)
+                    where id = :accountId
+                   """
+    )
+    public int update(Long accountId, Double amount);
 
     @Transactional
     @Modifying
