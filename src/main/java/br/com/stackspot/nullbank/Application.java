@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConf
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = ErrorMvcAutoConfiguration.class) // Needed by Zalando Problem lib
-public class Preventing-lost-update-raceconditionApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Preventing-lost-update-raceconditionApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }
