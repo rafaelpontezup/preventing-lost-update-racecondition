@@ -1,0 +1,19 @@
+applied_templates:
+- inputs:
+    project_artifact_id: nullbank
+    project_description: Simple REST API application with Java and Spring Boot
+    project_group_id: br.com.stackspot
+    project_name: preventing-lost-update-racecondition
+    project_springboot_version: 2.7.2
+    project_version: 0.0.1-SNAPSHOT
+  template_data_path: java-springboot-restapi-stack/default-template
+- inputs:
+    database_name: PostgreSQL
+    package: br.com.stackspot.nullbank
+    path_code_directory: src.main.java.br.com.stackspot.nullbank
+    path_test_code_directory: src.test.java.br.com.stackspot.nullbank
+  template_data_path: java-springboot-restapi-stack/java-spring-data-jpa-plugin
+global_computed_inputs: {}
+global_inputs: {}
+stack: java-springboot-restapi-stack
+stack_type: app

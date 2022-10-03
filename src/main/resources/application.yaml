@@ -1,0 +1,93 @@
+##
+# Server
+# https://docs.spring.io/spring-boot/docs/current/reference/html/application-properties.html#appendix.application-properties.server
+# https://github.com/spring-projects/spring-restdocs/issues/710
+# https://www.baeldung.com/exception-handling-for-rest-with-spring#spring-boot
+# https://reflectoring.io/spring-boot-exception-handling/
+##
+server:
+    error:
+        include-message: always
+        include-binding-errors: always
+        include-stacktrace: on_param
+        include-exception: false
+    port: 8080
+    servlet:
+        context-path: /
+
+##
+# Spring Application
+##
+spring:
+    ##
+    # DataSource and JPA/Hibernate (PostgreSQL)
+    ##
+    datasource:
+        driverClassName: org.postgresql.Driver
+        url: jdbc:postgresql://localhost:5432/dev_db
+        username: postgres
+        password: postgres
+        hikari:
+            auto-commit: false
+            maximum-pool-size: 20
+            connection-timeout: 10000       # 10s
+            validation-timeout: 5000        # 5s
+            max-lifetime: 1800000           # 30min
+            leak-detection-threshold: 60000 # 1min
+    jpa:
+        generate-ddl: true
+        show-sql: true
+        open-in-view: false
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+                jdbc:
+                    time_zone: UTC
+                    batch_size: 15
+                    order_inserts: true
+                    order_updates: true
+                    batch_versioned_data: true
+                connection:
+                    provider_disables_autocommit: true
+                query:
+                    in_clause_parameter_padding: true
+                    fail_on_pagination_over_collection_fetch: true
+                    plan_cache_max_size: 4096
+    output:
+        ansi:
+            enabled: ALWAYS
+    ##
+    # Zalando Problem Spring Web
+    # https://github.com/zalando/problem-spring-web/issues/732
+    ##
+    web:
+        resources:
+            add-mappings: false
+    mvc:
+        throw-exception-if-no-handler-found: true
+
+##
+# Spring Actuator
+# https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints
+##
+management:
+    endpoints:
+        jmx:
+            exposure:
+                include: "*"
+        web:
+            exposure:
+                include: health
+    endpoint:
+        health:
+            show-details: always
+            show-components: always
+            ##
+            # Kubernetes Probes
+            # https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html#actuator.endpoints.kubernetes-probes
+            ##
+            probes:
+                enabled: true
+                add-additional-paths: true
