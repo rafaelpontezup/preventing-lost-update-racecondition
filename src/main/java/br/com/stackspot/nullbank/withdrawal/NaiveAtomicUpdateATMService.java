@@ -15,6 +15,11 @@ public class NaiveAtomicUpdateATMService {
     @Transactional
     public void withdraw(Long accountId, double amount) {
 
+        Double currentBalance = repository.getBalance(accountId);
+        if (currentBalance < 0) {
+            throw new IllegalStateException("there's not enough balance");
+        };
+
         repository.update(accountId, amount);
 
         transactionRepository
