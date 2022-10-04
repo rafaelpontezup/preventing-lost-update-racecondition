@@ -8,6 +8,13 @@ spring:
     datasource:
         driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
         url: jdbc:tc:postgresql:14.5:////test_db
+        hikari:
+            auto-commit: true
+    jpa:
+        properties:
+            hibernate:
+                connection:
+                    provider_disables_autocommit: false
     ##
     # Jackson
     # https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto.spring-mvc.customize-jackson-objectmapper
@@ -17,3 +24,10 @@ spring:
     jackson:
         serialization:
             indent_output: true
+
+logging:
+    level:
+        org.springframework.orm.jpa: DEBUG
+        org.springframework.transaction: DEBUG
+        org.springframework.transaction.interceptor: TRACE
+        org.springframework.jdbc.core: TRACE
