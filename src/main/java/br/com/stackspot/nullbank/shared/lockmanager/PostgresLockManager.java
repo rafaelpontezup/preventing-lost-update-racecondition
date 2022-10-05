@@ -24,7 +24,7 @@ public class PostgresLockManager {
     }
 
     /**
-     * Tries to acquire a distributed lock from the database before execute the operation
+     * Tries to acquire a distributed lock from the database before executing the operation
      * until the timeout expires
      */
     @Transactional
