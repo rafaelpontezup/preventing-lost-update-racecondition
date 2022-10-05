@@ -1,10 +1,5 @@
 package br.com.stackspot.nullbank.withdrawal.optimisticlocking;
 
-import br.com.stackspot.nullbank.withdrawal.Account;
-import br.com.stackspot.nullbank.withdrawal.AccountRepository;
-import br.com.stackspot.nullbank.withdrawal.Transaction;
-import br.com.stackspot.nullbank.withdrawal.TransactionRepository;
-import org.hibernate.exception.LockAcquisitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
