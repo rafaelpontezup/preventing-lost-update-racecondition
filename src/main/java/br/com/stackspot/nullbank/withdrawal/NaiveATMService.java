@@ -12,6 +12,10 @@ public class NaiveATMService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    /**
+     * By default, a transaction is open using the default database isolation level.
+     * Postgres and most popular databases use READ_COMMITTED isolation level by default.
+     */
     @Transactional
     public void withdraw(Long accountId, double amount) {
 
