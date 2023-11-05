@@ -1,12 +1,11 @@
 package br.com.stackspot.nullbank.withdrawal;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.hibernate.LockOptions;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.LockModeType;
+import javax.persistence.QueryHint;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
@@ -30,6 +29,14 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Lock(LockModeType.PESSIMISTIC_READ)
     @Query("select c from Account c where c.id = :accountId")
     public Optional<Account> findByIdWithPessimisticReadLocking(Long accountId);
+
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select c from Account c where c.id = :accountId")
+    @QueryHints({
+        @QueryHint(name = "javax.persistence.lock.timeout", value = (LockOptions.NO_WAIT + ""))
+    })
+    public Optional<Account> findByIdWithPessimisticNoWaitLocking(Long accountId);
 
     @Transactional
     @Modifying
