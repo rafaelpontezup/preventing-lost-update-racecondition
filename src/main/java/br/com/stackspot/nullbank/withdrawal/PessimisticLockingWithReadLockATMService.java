@@ -1,7 +1,8 @@
 package br.com.stackspot.nullbank.withdrawal;
 
+import org.hibernate.exception.LockAcquisitionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,13 @@ public class PessimisticLockingWithReadLockATMService {
     private TransactionRepository transactionRepository;
 
     @Retryable(
-            value = ObjectOptimisticLockingFailureException.class,
+            value = {
+                LockAcquisitionException.class, // hibernate
+                CannotAcquireLockException.class // spring
+            },
             maxAttempts = 3,
-            backoff = @Backoff(delay = 100, random = true, multiplier = 2.0)
+            backoff = @Backoff(delay = 400, maxDelay = 8000, random = true) // UniformRandomBackOffPolicy
+//            backoff = @Backoff(delay = 100, random = true, multiplier = 2.0) // ExponentialRandomBackOffPolicy
     )
     @Transactional
     public void withdraw(Long accountId, double amount) {

@@ -31,3 +31,4 @@ logging:
         org.springframework.transaction: DEBUG
         org.springframework.transaction.interceptor: TRACE
         org.springframework.jdbc.core: TRACE
+        org.springframework.retry.support.RetryTemplate: TRACE
