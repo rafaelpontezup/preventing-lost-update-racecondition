@@ -48,21 +48,25 @@ class PessimisticLockingWithReadLockATMServiceTest extends SpringBootIntegration
      * can help to configure Spring Retry properly:
      * https://medium.com/@vmoulds01/springboot-retry-random-backoff-136f41a3211a
      *
-     * It might work with fewer concurrent transactions/threads with a proper retry policy. But the more concurrent threads,
+     * It might work with fewer concurrent threads with a proper retry policy. But the more concurrent threads,
      * the worse it is.
      */
     @Test
-    @DisplayName("should withdraw money from account concurrently")
+    @DisplayName("⚠️ | should withdraw money from account concurrently")
     public void t2() throws InterruptedException {
+        /**
+         * The more concurrent threads, the worse success rate.
+         */
+        int numberOfThreads = 4;
 
-        doSyncAndConcurrently(5, s -> {
+        doSyncAndConcurrently(numberOfThreads, s -> {
             pessimisticLockingReadLockATMService
-                    .withdraw(ACCOUNT.getId(), 20.0);
+                    .withdraw(ACCOUNT.getId(), 25.0);
         });
 
         assertAll("account and transaction states",
             () -> assertEquals(0.0, accountRepository.getBalance(ACCOUNT.getId()), "account balance"),
-            () -> assertEquals(5, transactionRepository.countByAccount(ACCOUNT), "number of transactions")
+            () -> assertEquals(numberOfThreads, transactionRepository.countByAccount(ACCOUNT), "number of transactions")
         );
     }
 

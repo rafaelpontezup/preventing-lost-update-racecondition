@@ -6,8 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class NaiveNonTransactionalATMServiceTest extends SpringBootIntegrationTest {
 
@@ -41,7 +40,7 @@ class NaiveNonTransactionalATMServiceTest extends SpringBootIntegrationTest {
     }
 
     @Test
-    @DisplayName("should withdraw money from account concurrently")
+    @DisplayName("😰 | should NOT withdraw money from account concurrently")
     public void t2() throws InterruptedException {
 
         doSyncAndConcurrently(10, s -> {
@@ -50,8 +49,8 @@ class NaiveNonTransactionalATMServiceTest extends SpringBootIntegrationTest {
         });
 
         assertAll("account and transaction states",
-            () -> assertEquals(0.0, accountRepository.getBalance(ACCOUNT.getId()), "account balance"),
-            () -> assertEquals(5, transactionRepository.countByAccount(ACCOUNT), "number of transactions")
+            () -> assertNotEquals(0.0, accountRepository.getBalance(ACCOUNT.getId()), "account balance"),
+            () -> assertNotEquals(5, transactionRepository.countByAccount(ACCOUNT), "number of transactions")
         );
     }
 
