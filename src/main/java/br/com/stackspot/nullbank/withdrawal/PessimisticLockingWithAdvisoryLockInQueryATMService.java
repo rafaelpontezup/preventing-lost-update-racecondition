@@ -1,6 +1,5 @@
 package br.com.stackspot.nullbank.withdrawal;
 
-import org.hibernate.exception.LockAcquisitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -16,7 +15,7 @@ public class PessimisticLockingWithAdvisoryLockInQueryATMService {
     private TransactionRepository transactionRepository;
 
     @Retryable(
-            value = AccountNotFoundOrLockNotAcquiredException.class,
+            value = FailedToAcquireLockForAccountException.class,
             maxAttempts = 3,
             backoff = @Backoff(delay = 100, random = true, multiplier = 2.0)
     )
@@ -24,7 +23,8 @@ public class PessimisticLockingWithAdvisoryLockInQueryATMService {
     public void withdraw(Long accountId, double amount) {
 
         Account account = repository.findByIdWithPessimisticAdvisoryLocking(accountId).orElseThrow(() -> {
-            throw new AccountNotFoundOrLockNotAcquiredException("account does not exist: " + accountId);
+            // Here I am assuming the account always exists
+            throw new FailedToAcquireLockForAccountException("Account already locked by another thread");
         });
 
         double newBalance = (account.getBalance() - amount);
@@ -39,9 +39,10 @@ public class PessimisticLockingWithAdvisoryLockInQueryATMService {
                 .save(new Transaction(account, amount, "withdraw"));
     }
 
-    class AccountNotFoundOrLockNotAcquiredException extends RuntimeException {
 
-        public AccountNotFoundOrLockNotAcquiredException(String message) {
+    class FailedToAcquireLockForAccountException extends RuntimeException {
+
+        public FailedToAcquireLockForAccountException(String message) {
             super(message);
         }
     }

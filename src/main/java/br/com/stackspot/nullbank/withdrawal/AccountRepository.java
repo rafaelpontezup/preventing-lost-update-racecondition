@@ -38,13 +38,18 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     })
     public Optional<Account> findByIdWithPessimisticNoWaitLocking(Long accountId);
 
+    /**
+     * Important: Does NOT load the entity when a lock is not acquired.
+     *
+     * ⚠️ Here we can see a JPQL version that loads the entity even when a lock is not acquired:
+     * https://gist.github.com/rponte/1a31395f58de1cd189daae0a358cec20#file-accountrepository-java-L19-L28
+     */
     @Transactional
-    @Query(nativeQuery = true,
-            value = """
-                   select c.* 
-                     from account c
+    @Query(value = """
+                   select c
+                     from Account c
                     where c.id = :accountId
-                      and pg_try_advisory_xact_lock(c.id)
+                      and pg_try_advisory_xact_lock(c.id) is true
                    """
     )
     public Optional<Account> findByIdWithPessimisticAdvisoryLocking(Long accountId);
