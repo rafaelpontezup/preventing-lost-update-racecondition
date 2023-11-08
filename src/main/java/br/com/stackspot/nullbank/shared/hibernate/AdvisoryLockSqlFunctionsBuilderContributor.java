@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * it seems like it's not necessary. Hibernate can understand this function correctly in JPQL queries.
+ * It seems like it's not necessary on Hibernate v5.6.10.
+ * I mean, hibernate can understand this function correctly in JPQL queries.
  */
 @Configuration
 public class AdvisoryLockSqlFunctionsBuilderContributor implements MetadataBuilderContributor {
