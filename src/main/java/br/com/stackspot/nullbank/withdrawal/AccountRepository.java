@@ -39,6 +39,17 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     public Optional<Account> findByIdWithPessimisticNoWaitLocking(Long accountId);
 
     @Transactional
+    @Query(nativeQuery = true,
+            value = """
+                   select c.* 
+                     from account c
+                    where c.id = :accountId
+                      and pg_try_advisory_xact_lock(c.id)
+                   """
+    )
+    public Optional<Account> findByIdWithPessimisticAdvisoryLocking(Long accountId);
+
+    @Transactional
     @Modifying
     @Query(nativeQuery = true,
             value = """
