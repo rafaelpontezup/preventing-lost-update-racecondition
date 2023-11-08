@@ -52,7 +52,7 @@ public class PostgresLockManager {
                     .queryForObject("select pg_try_advisory_xact_lock(?)", Boolean.class, key);
 
             if (!acquired) {
-                throw new AdvisoryLockNotAcquiredException("Advisory lock not acquired");
+                throw new AdvisoryLockNotAcquiredException("Advisory lock not acquired for key '" + key + "'");
             }
             return null;
         });
