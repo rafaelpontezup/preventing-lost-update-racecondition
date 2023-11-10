@@ -49,7 +49,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                    select c
                      from Account c
                     where c.id = :accountId
-                      and pg_try_advisory_xact_lock(c.id) is true
+                      and pg_try_advisory_xact_lock(
+                                pg_catalog.hashtextextended('account', c.id)
+                          ) is true
                    """
     )
     public Optional<Account> findByIdWithPessimisticAdvisoryLocking(Long accountId);
