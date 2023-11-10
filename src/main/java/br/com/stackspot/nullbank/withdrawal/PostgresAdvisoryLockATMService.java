@@ -1,5 +1,6 @@
 package br.com.stackspot.nullbank.withdrawal;
 
+import br.com.stackspot.nullbank.shared.lockmanager.LockKey;
 import br.com.stackspot.nullbank.shared.lockmanager.PostgresLockManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,8 @@ public class PostgresAdvisoryLockATMService {
     @Transactional
     public void withdraw(Long accountId, double amount) {
 
-        postgresLockManager.tryWithLock(accountId, MAX_TIMEOUT, () -> {
+        LockKey key = LockKey.of("account", accountId);
+        postgresLockManager.tryWithLock(key, MAX_TIMEOUT, () -> {
 
             Account account = repository.findById(accountId).orElseThrow(() -> {
                 throw new IllegalStateException("account does not exist: " + accountId);

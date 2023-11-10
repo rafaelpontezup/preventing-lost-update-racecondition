@@ -28,28 +28,28 @@ public class PostgresLockManager {
      * until the timeout expires
      */
     @Transactional
-    public void tryWithLock(Long key, Duration timeout, Runnable operation) {
-        lock(key, timeout);
+    public void tryWithLock(LockKey key, Duration timeout, Runnable operation) {
+        lock(key.getKey(), timeout);
         operation.run();
     }
 
-    private void lock(final Long key, Duration timeout) {
+    private void lock(final String key, Duration timeout) {
 
         // creates and configure a RetryTemplate
         RetryTemplate retryTemplate
                 = RetryTemplate.builder()
-                    .maxAttempts(3)
+                    .maxAttempts(1000) // tries as much as possible
                     .exponentialBackoff(100, 2, timeout.toMillis(), true)
                     .retryOn(AdvisoryLockNotAcquiredException.class)
                     .traversingCauses()
                     .build();
 
-        LOGGER.info("Acquiring pg_try_advisory_xact_lock({})", key);
+        LOGGER.info("Acquiring pg_try_advisory_xact_lock() for key '{}'", key);
 
         // tries to acquire a lock until the timeout expires
         retryTemplate.execute(retryContext -> {
             boolean acquired = jdbcTemplate
-                    .queryForObject("select pg_try_advisory_xact_lock(?)", Boolean.class, key);
+                    .queryForObject("select pg_try_advisory_xact_lock(pg_catalog.hashtextextended(?, 0))", Boolean.class, key);
 
             if (!acquired) {
                 throw new AdvisoryLockNotAcquiredException("Advisory lock not acquired for key '" + key + "'");

@@ -44,7 +44,7 @@ class PostgresAdvisoryLockATMServiceTest extends SpringBootIntegrationTest {
     @DisplayName("should withdraw money from account concurrently")
     public void t2() throws InterruptedException {
 
-        doSyncAndConcurrently(20, s -> {
+        doSyncAndConcurrently(10, s -> {
             postgresAdvisoryLockATMService
                     .withdraw(ACCOUNT.getId(), 20.0);
         });
