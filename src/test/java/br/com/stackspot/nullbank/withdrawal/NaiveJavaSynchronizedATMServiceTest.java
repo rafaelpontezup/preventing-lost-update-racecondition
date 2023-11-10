@@ -40,8 +40,12 @@ class NaiveJavaSynchronizedATMServiceTest extends SpringBootIntegrationTest {
         assertEquals(1, transactionRepository.countByAccount(ACCOUNT), "number of transactions");
     }
 
+    /**
+     * IMPORTANT: it works only on single JVM, I mean, this solution
+     * does NOT work on clustered environment
+     */
     @Test
-    @DisplayName("should withdraw money from account concurrently")
+    @DisplayName("⚠️ | should withdraw money from account concurrently")
     public void t2() throws InterruptedException {
 
         doSyncAndConcurrently(10, s -> {
