@@ -24,7 +24,7 @@ To be sure that those solutions worked as expected, I wrote integration tests fo
 
 Before we get into the possible solutions, we must understand the scenario with its business logic and also when the race condition can happen.
 
-All the tests were made using a commom scenario where the lost update can happen: **updating an account balance**. Basically, we have a service responsible for withdrawing money from a specific account.
+We will work on a commom scenario where the lost update can happen: **updating an account balance**. All the integration tests were made using this scenario. Basically, we have a service responsible for withdrawing money from a specific account. This services could be written in any language or framework, but what matters is how it reads from and writes data to the database.
 
 So, the idea of the business logic in raw SQL would be something like that:
 
@@ -66,5 +66,5 @@ Although the business logic is correct and works as expected, it's a naive imple
 
 ## Let's get to know each solution
 
-
+🚧 UNDER CONSTRUCTION
 
