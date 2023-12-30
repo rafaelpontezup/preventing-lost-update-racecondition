@@ -2,6 +2,7 @@ package br.com.stackspot.nullbank.withdrawal;
 
 import org.hibernate.exception.LockAcquisitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class RepeatableReadIsolationLevelATMService {
     private TransactionRepository transactionRepository;
 
     @Retryable(
-            value = LockAcquisitionException.class,
+            value = { CannotAcquireLockException.class, LockAcquisitionException.class },
             maxAttempts = 3,
             backoff = @Backoff(delay = 100, random = true, multiplier = 2.0)
     )
