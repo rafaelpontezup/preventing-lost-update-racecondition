@@ -1,5 +1,6 @@
 package br.com.stackspot.nullbank.withdrawal;
 
+import br.com.stackspot.nullbank.withdrawal.PessimisticLockingWithAdvisoryLockInSmartQueryATMService.LockableAccount;
 import org.hibernate.LockOptions;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
 import javax.transaction.Transactional;
 import java.util.Optional;
+
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
@@ -55,6 +57,29 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                    """
     )
     public Optional<Account> findByIdWithPessimisticAdvisoryLocking(Long accountId);
+
+    /**
+     * Important: This query DOES load the entity even when a lock is not acquired.
+     *
+     * ⚠️ For more details:
+     * https://gist.github.com/rponte/1a31395f58de1cd189daae0a358cec20#file-accountrepository-java-L19-L28
+     */
+    @Transactional
+    @Query(value = """
+                   select new br.com.stackspot.nullbank.withdrawal.PessimisticLockingWithAdvisoryLockInSmartQueryATMService$LockableAccount(
+                          c
+                         ,pg_try_advisory_xact_lock(
+                                pg_catalog.hashtextextended('account', c.id)
+                          )
+                         )
+                     from Account c
+                    where c.id = :accountId
+                      and pg_try_advisory_xact_lock(
+                                pg_catalog.hashtextextended('account', c.id)
+                          ) is not null
+                   """
+    )
+    public Optional<LockableAccount> findByIdWithPessimisticAdvisoryLockingInSelectClause(Long accountId);
 
     @Transactional
     @Modifying
