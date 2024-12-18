@@ -1,6 +1,6 @@
 package br.com.stackspot.nullbank.withdrawal;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class Transaction {

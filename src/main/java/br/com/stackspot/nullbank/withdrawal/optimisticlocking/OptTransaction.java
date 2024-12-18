@@ -1,6 +1,6 @@
 package br.com.stackspot.nullbank.withdrawal.optimisticlocking;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class OptTransaction {

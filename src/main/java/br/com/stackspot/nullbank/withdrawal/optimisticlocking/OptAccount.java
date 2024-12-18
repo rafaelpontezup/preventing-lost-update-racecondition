@@ -1,6 +1,6 @@
 package br.com.stackspot.nullbank.withdrawal.optimisticlocking;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class OptAccount {
@@ -12,7 +12,7 @@ public class OptAccount {
     @Column(nullable = false, unique = true)
     private String holderName;
 
-    @Column(nullable = false, precision = 9, scale = 2)
+    @Column(nullable = false, precision = 9)
     private Double balance;
 
     /**

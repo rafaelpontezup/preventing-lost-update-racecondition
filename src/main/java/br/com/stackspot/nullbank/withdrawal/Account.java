@@ -1,7 +1,6 @@
 package br.com.stackspot.nullbank.withdrawal;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
+import jakarta.persistence.*;
 
 @Entity
 public class Account {
@@ -13,7 +12,7 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String holderName;
 
-    @Column(nullable = false, precision = 9, scale = 2)
+    @Column(nullable = false, precision = 9)
     private Double balance;
 
     @Deprecated

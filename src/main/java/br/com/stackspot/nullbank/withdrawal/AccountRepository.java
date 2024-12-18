@@ -1,13 +1,13 @@
 package br.com.stackspot.nullbank.withdrawal;
 
 import br.com.stackspot.nullbank.withdrawal.PessimisticLockingWithAdvisoryLockInSmartQueryATMService.LockableAccount;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
+import jakarta.transaction.Transactional;
 import org.hibernate.LockOptions;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.LockModeType;
-import javax.persistence.QueryHint;
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 
@@ -45,6 +45,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
      *
      * ⚠️ Here we can see a JPQL version that loads the entity even when a lock is not acquired:
      * https://gist.github.com/rponte/1a31395f58de1cd189daae0a358cec20#file-accountrepository-java-L19-L28
+     *
+     * ⚠️ Spring Data 3.x throws a JPQL syntax error when using "IS TRUE/FALSE" instead of "= TRUE/FALSE"
+     * https://discourse.hibernate.org/t/after-upgrading-hibernate-from-v5-to-v6-query-with-localdatetime-parameter-throws-an-error/9652/17
      */
     @Transactional
     @Query(value = """
@@ -53,7 +56,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                     where c.id = :accountId
                       and pg_try_advisory_xact_lock(
                                 pg_catalog.hashtextextended('account', c.id)
-                          ) is true
+                          )    = true
                    """
     )
     public Optional<Account> findByIdWithPessimisticAdvisoryLocking(Long accountId);
